@@ -57,6 +57,9 @@ public void show(Stage stage) {
 	            navBox
 	        );
 	        root.setPadding(new Insets(30));
+	        root.setStyle("-fx-background-color:#5d8ddf");
+	        
+	        
 	
 }
 
