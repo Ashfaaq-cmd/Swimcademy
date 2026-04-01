@@ -54,7 +54,7 @@ public class BookSessionPage {
         //table 
         table = new TableView<>();
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-        table.setPrefHeight(320);
+        table.setPrefHeight(280);
 
         table.setStyle(
             "-fx-background-color: white;" +
@@ -87,8 +87,8 @@ public class BookSessionPage {
         table.getColumns().addAll(colTitle, colCoach, colDate, colTime, colLvl, colSlots, colPrice);
 
        
-        Label lblMsg = new Label();
-        lblMsg.setStyle("-fx-font-size: 13;");
+        Label lblMsg = new Label("");
+        lblMsg.setFont(Font.font(13));
 
      // Book Button
         ImageView tickIcon = new ImageView(new Image(getClass().getResourceAsStream("/image/tick.png")));

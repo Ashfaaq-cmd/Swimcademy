@@ -72,8 +72,8 @@ public class StudentDashboard {
         VBox navBox = new VBox(12, btnBook, btnMyBook, btnLogout);
         navBox.setAlignment(Pos.CENTER);
 
-        Label quick = new Label("Quick Actions");
-        quick.setFont(Font.font("System", FontWeight.BOLD, 14));
+        Label quick = new Label("Quick Actions:");
+        quick.setFont(Font.font("System", FontWeight.BOLD, 15));
         quick.setTextFill(Color.web("#333"));
 
         //Card Container
