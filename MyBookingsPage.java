@@ -75,11 +75,11 @@ public class MyBookingsPage {
         ImageView cancelIcon = new ImageView(new Image(getClass().getResourceAsStream("/image/close.png")));
         cancelIcon.setFitWidth(18);
         cancelIcon.setFitHeight(18);
-        Button cancelBtn = new Button("Cancel Booking");
-        cancelBtn.setGraphic(cancelIcon);
-        cancelBtn.setContentDisplay(ContentDisplay.LEFT);
-        cancelBtn.setPrefWidth(200);
-        cancelBtn.setStyle(
+        Button btnCancel = new Button("Cancel Booking");
+        btnCancel.setGraphic(cancelIcon);
+        btnCancel.setContentDisplay(ContentDisplay.LEFT);
+        btnCancel.setPrefWidth(200);
+        btnCancel.setStyle(
             "-fx-background-color: #e53935;" +
             "-fx-text-fill: white;" +
             "-fx-font-weight: bold;" +
@@ -91,11 +91,11 @@ public class MyBookingsPage {
         ImageView backIcon = new ImageView(new Image(getClass().getResourceAsStream("/image/back.png")));
         backIcon.setFitWidth(18);
         backIcon.setFitHeight(18);
-        Button backBtn = new Button("Back to Dashboard");
-        backBtn.setGraphic(backIcon);
-        backBtn.setContentDisplay(ContentDisplay.LEFT);
-        backBtn.setPrefWidth(200);
-        backBtn.setStyle(
+        Button btnBack = new Button("Back to Dashboard");
+        btnBack.setGraphic(backIcon);
+        btnBack.setContentDisplay(ContentDisplay.LEFT);
+        btnBack.setPrefWidth(200);
+        btnBack.setStyle(
             "-fx-background-color: #546e7a;" +
             "-fx-text-fill: white;" +
             "-fx-font-weight: bold;" +
@@ -104,7 +104,7 @@ public class MyBookingsPage {
             "-fx-cursor: hand;"
         );
 
-        HBox btnRow = new HBox(15, cancelBtn, backBtn);
+        HBox btnRow = new HBox(15, btnCancel, btnBack);
         btnRow.setAlignment(Pos.CENTER_LEFT);
 
         // Root card
@@ -126,7 +126,7 @@ public class MyBookingsPage {
         loadBookings();
 
         // Actions
-        cancelBtn.setOnAction(e -> {
+        btnCancel.setOnAction(e -> {
             Booking selected = table.getSelectionModel().getSelectedItem();
             if (selected == null) {
                 lblMsg.setTextFill(Color.ORANGE);
@@ -149,7 +149,7 @@ public class MyBookingsPage {
             }
         });
 
-        backBtn.setOnAction(e -> new StudentDashboard(currentUser).show(stage));
+        btnBack.setOnAction(e -> new StudentDashboard(currentUser).show(stage));
 
         // Show scene
         Scene scene = new Scene(root, 900, 520);
