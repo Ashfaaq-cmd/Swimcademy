@@ -1,5 +1,4 @@
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -66,7 +65,7 @@ public class AdminDashboard {
 	        ImageView logoutIcon = new ImageView(new Image(getClass().getResourceAsStream("/image/logout.png")));
 	        logoutIcon.setFitWidth(18);
 	        logoutIcon.setFitHeight(18);
-	        Button btnLogout = makeNavBtn("Logout", "#e53935", "#b71c1c", logoutIcon);;
+	        Button btnLogout = makeNavBtn("Logout","#b71c1c",  "#e53935", logoutIcon);;
 
 	        VBox navBox = new VBox(12,btnManageSessions, btnBookings, btnLogout);
 	        navBox.setAlignment(Pos.CENTER);

@@ -2,6 +2,7 @@
 public class Booking {
 private int id;
 private int userId;
+private String studentName;
 private int sessionId;
 private String bookingDate;
 private String status;
@@ -22,6 +23,12 @@ public int getUserId() {
 public void setUserId(int userId) {
 	this.userId = userId;
 }
+public String getStudentName(){
+	return studentName; 
+	}
+public void setStudentName(String studentName){
+	this.studentName = studentName;
+	}
 public int getSessionId() {
 	return sessionId;
 }

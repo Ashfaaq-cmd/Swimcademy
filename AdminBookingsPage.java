@@ -1,4 +1,13 @@
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
@@ -42,7 +51,7 @@ public class AdminBookingsPage {
 	        bId.setMaxWidth(50);
 	        
 	        TableColumn<Booking, String> bUser = new TableColumn<>("Student");
-	        bUser.setCellValueFactory(d -> new javafx.beans.property.SimpleStringProperty(fetchUserName(d.getValue().getUserId())));
+	        bUser.setCellValueFactory(new PropertyValueFactory<>("studentName"));
 	        TableColumn<Booking, String> bSession = new TableColumn<>("Session");
 	        bSession.setCellValueFactory(new PropertyValueFactory<>("sessionTitle"));
 	        
@@ -90,12 +99,13 @@ public class AdminBookingsPage {
 	        btnBack.setContentDisplay(ContentDisplay.LEFT);
 	        btnBack.setPrefWidth(200);
 	        btnBack.setStyle(
-	            "-fx-background-color: #546e7a;" +
-	            "-fx-text-fill: white;" +
-	            "-fx-font-weight: bold;" +
-	            "-fx-background-radius: 20;" +
-	            "-fx-padding: 8 16;" +
-	            "-fx-cursor: hand;"
+	        		 "-fx-background-color: linear-gradient(to right,#546e7a,#748993);"+
+	     		            "-fx-text-fill: white;" +
+	     		            "-fx-font-size: 13;" +
+	     		            "-fx-font-weight: bold;" +
+	     		            "-fx-background-radius: 8;" +
+	     		            "-fx-padding: 10 20;" +
+	     		            "-fx-cursor: hand;"
 	        );
 	        VBox root = new VBox(12,
 	                title,
@@ -108,7 +118,79 @@ public class AdminBookingsPage {
 	            root.setStyle("-fx-background-color: #f5f9ff;");
 	            
 	            //Load Data
+	            bookTable.setItems(FXCollections.observableArrayList(loadBookings()));
+	            payTable.setItems(FXCollections.observableArrayList(loadPayments()));
+	            btnBack.setOnAction(e-> new AdminDashboard(currentUser).show(stage));
 	            
+	            Scene scene = new Scene(root, 900, 620);
+	            stage.setTitle("All Bookings & Payments");
+	            stage.setScene(scene);
+	            stage.show();
 
 }
+
+
+		private List<Payment> loadPayments() {
+			// TODO Auto-generated method stub
+			 List<Payment> list = new ArrayList<>();
+		        String sql =
+		            "SELECT p.id, p.booking_id, p.amount, p.payment_date, p.payment_status, " +
+		            "       u.full_name, s.title " +
+		            "FROM payments p " +
+		            "JOIN bookings b ON p.booking_id = b.id " +
+		            "JOIN users    u ON b.user_id    = u.id " +
+		            "JOIN sessions s ON b.session_id = s.id " +
+		            "ORDER BY p.id DESC";
+		        try (Connection conn = DatabaseConnection.getConnection();
+		             PreparedStatement ps = conn.prepareStatement(sql)) {
+		            ResultSet rs = ps.executeQuery();
+		            while (rs.next()) {
+		                Payment py = new Payment();
+		                py.setId(rs.getInt("id"));
+		                py.setBookingId(rs.getInt("booking_id"));
+		                py.setAmount(rs.getDouble("amount"));
+		                py.setPaymentDate(rs.getString("payment_date"));
+		                py.setPaymentStatus(rs.getString("payment_status"));
+		                py.setStudentName(rs.getString("full_name"));
+		                py.setSessionTitle(rs.getString("title"));
+		                list.add(py);
+		            }
+		        } catch (SQLException ex) {
+		        	ex.printStackTrace();
+		        	}
+		        return list;
+			
+		}
+
+		private List<Booking> loadBookings() {
+	        List<Booking> list = new ArrayList<>();
+	        String sql =
+	        	    "SELECT b.id, b.user_id, b.session_id, b.booking_date, b.status, " +
+	        	    "       s.title, s.session_date, s.session_time, s.price, u.full_name " +
+	        	    "FROM bookings b " +
+	        	    "JOIN sessions s ON b.session_id = s.id " +
+	        	    "JOIN users u ON b.user_id = u.id " +
+	        	    "ORDER BY b.id DESC";
+	        try (Connection conn = DatabaseConnection.getConnection();
+	             PreparedStatement ps = conn.prepareStatement(sql)) {
+	            ResultSet rs = ps.executeQuery();
+	            while (rs.next()) {
+	                Booking bk = new Booking();
+	                bk.setId(rs.getInt("id"));
+	                bk.setUserId(rs.getInt("user_id"));
+	                bk.setSessionId(rs.getInt("session_id"));
+	                bk.setBookingDate(rs.getString("booking_date"));
+	                bk.setStatus(rs.getString("status"));
+	                bk.setSessionTitle(rs.getString("title"));
+	                bk.setSessionDate(rs.getString("session_date"));
+	                bk.setSessionTime(rs.getString("session_time"));
+	                bk.setPrice(rs.getDouble("price"));
+	                bk.setStudentName(rs.getString("full_name"));
+	                list.add(bk);
+	            }
+	        } catch (SQLException ex) {
+	        	ex.printStackTrace(); 
+	        	}
+	        return list;
+	    }
 }

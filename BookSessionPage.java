@@ -97,30 +97,33 @@ public class BookSessionPage {
         Button btnBook = new Button("Book Session");
         btnBook.setGraphic(tickIcon);
         btnBook.setContentDisplay(ContentDisplay.LEFT);
-        btnBook.setPrefWidth(220);
+        btnBook.setPrefWidth(200);
         btnBook.setStyle(
             "-fx-background-color: linear-gradient(to right, #43a047, #2e7d32);" +
             "-fx-text-fill: white;" +
+            "-fx-font-size: 13;" +
             "-fx-font-weight: bold;" +
-            "-fx-background-radius: 20;" +
-            "-fx-padding: 8 18;"
+            "-fx-background-radius: 8;" +
+            "-fx-padding: 10 20;"+
+            "-fx-cursor: hand;"
         );
 
         // Back Button
         ImageView backIcon = new ImageView(new Image(getClass().getResourceAsStream("/image/back.png")));
         backIcon.setFitWidth(18);
         backIcon.setFitHeight(18);
-        Button btnBack = new Button("Back");
+        Button btnBack = new Button("Back to Dashboard");
         btnBack.setGraphic(backIcon);
         btnBack.setContentDisplay(ContentDisplay.LEFT);
-        btnBack.setPrefWidth(140);
+        btnBack.setPrefWidth(200);
         btnBack.setStyle(
-            "-fx-background-color: #546e7a;" +
-            "-fx-text-fill: white;" +
-            "-fx-font-weight: bold;" +
-            "-fx-background-radius: 20;" +
-            "-fx-padding: 8 16;" +
-            "-fx-cursor: hand;"
+        		 "-fx-background-color: linear-gradient(to right,#546e7a,#748993);"+
+	     		            "-fx-text-fill: white;" +
+	     		            "-fx-font-size: 13;" +
+	     		            "-fx-font-weight: bold;" +
+	     		            "-fx-background-radius: 8;" +
+	     		            "-fx-padding: 10 20;" +
+	     		            "-fx-cursor: hand;"
         );
 
         HBox btnRow = new HBox(15, btnBook, btnBack);

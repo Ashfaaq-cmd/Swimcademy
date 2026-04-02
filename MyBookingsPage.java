@@ -80,12 +80,13 @@ public class MyBookingsPage {
         btnCancel.setContentDisplay(ContentDisplay.LEFT);
         btnCancel.setPrefWidth(200);
         btnCancel.setStyle(
-            "-fx-background-color: #e53935;" +
-            "-fx-text-fill: white;" +
-            "-fx-font-weight: bold;" +
-            "-fx-background-radius: 20;" +
-            "-fx-padding: 8 16;" +
-            "-fx-cursor: hand;"
+        		 "-fx-background-color: linear-gradient(to right,#e53935,#e74c49);"+
+	     		            "-fx-text-fill: white;" +
+	     		            "-fx-font-size: 13;" +
+	     		            "-fx-font-weight: bold;" +
+	     		            "-fx-background-radius: 8;" +
+	     		            "-fx-padding: 10 20;" +
+	     		            "-fx-cursor: hand;"
         );
 
         ImageView backIcon = new ImageView(new Image(getClass().getResourceAsStream("/image/back.png")));
@@ -96,12 +97,13 @@ public class MyBookingsPage {
         btnBack.setContentDisplay(ContentDisplay.LEFT);
         btnBack.setPrefWidth(200);
         btnBack.setStyle(
-            "-fx-background-color: #546e7a;" +
-            "-fx-text-fill: white;" +
-            "-fx-font-weight: bold;" +
-            "-fx-background-radius: 20;" +
-            "-fx-padding: 8 16;" +
-            "-fx-cursor: hand;"
+        		 "-fx-background-color: linear-gradient(to right,#546e7a,#748993);"+
+	     		            "-fx-text-fill: white;" +
+	     		            "-fx-font-size: 13;" +
+	     		            "-fx-font-weight: bold;" +
+	     		            "-fx-background-radius: 8;" +
+	     		            "-fx-padding: 10 20;" +
+	     		            "-fx-cursor: hand;"
         );
 
         HBox btnRow = new HBox(15, btnCancel, btnBack);
@@ -138,15 +140,24 @@ public class MyBookingsPage {
                 lblMsg.setText("This booking is already cancelled.");
                 return;
             }
-            boolean ok = cancelBooking(selected.getId(), selected.getSessionId());
-            if (ok) {
-                lblMsg.setTextFill(Color.GREEN);
-                lblMsg.setText("Booking cancelled. Refund processed.");
-                loadBookings();
-            } else {
-                lblMsg.setTextFill(Color.RED);
-                lblMsg.setText("Could not cancel. Please try again.");
-            }
+            // Confirmation dialog
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Cancel Booking");
+            alert.setHeaderText("Are you sure?");
+            alert.setContentText("This will cancel your booking for: " + selected.getSessionTitle());
+            alert.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.OK) {
+                    boolean ok = cancelBooking(selected.getId(), selected.getSessionId());
+                    if (ok) {
+                        lblMsg.setTextFill(Color.GREEN);
+                        lblMsg.setText("Booking cancelled. Refund processed.");
+                        loadBookings();
+                    } else {
+                        lblMsg.setTextFill(Color.RED);
+                        lblMsg.setText("Could not cancel. Please try again.");
+                    }
+                }
+            });
         });
 
         btnBack.setOnAction(e -> new StudentDashboard(currentUser).show(stage));

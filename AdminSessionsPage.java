@@ -4,12 +4,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
@@ -109,10 +110,8 @@ public class AdminSessionsPage {
 	        ImageView backIcon = new ImageView(new Image(getClass().getResourceAsStream("/image/back.png")));
 	        backIcon.setFitWidth(18);
 	        backIcon.setFitHeight(18);
-	        Button btnBack = makeNavBtn("Back","546e7a","#7895a2",backIcon);
+	        Button btnBack = makeNavBtn("Back","#546e7a","#748993",backIcon);
 	       
-	        
-
 	        VBox btnRow = new VBox(10,btnAdd, btnDlt, btnBack);
 	        btnRow.setAlignment(Pos.CENTER);
 	        
@@ -145,9 +144,24 @@ public class AdminSessionsPage {
 	            	 lblMsg.setText("Please fill all fields");
 	            	 return;
 	             }
+	             if (!isValidDate(d)) {
+	            	    lblMsg.setTextFill(Color.RED);
+	            	    lblMsg.setText("Date must be in format YYYY-MM-DD (e.g. 2026-04-10)");
+	            	    return;
+	            	}
+	            	if (!isValidTime(tm)) {
+	            	    lblMsg.setTextFill(Color.RED);
+	            	    lblMsg.setText("Time must be in format HH:MM:SS (e.g. 08:00:00)");
+	            	    return;
+	            	}
 	             try {
 	            	 int cap = Integer.parseInt(cp);
 	            	 double price = Double.parseDouble(pr);
+	            	 if (cap <= 0 || price <= 0) {
+	            		    lblMsg.setTextFill(Color.RED);
+	            		    lblMsg.setText("Capacity and Price must be greater than 0.");
+	            		    return;
+	            		}
 	            	  String sql = "INSERT INTO sessions (title,coach,session_date,session_time,capacity,slots_available,level,price) VALUES (?,?,?,?,?,?,?,?)";
 	                  try (Connection conn = DatabaseConnection.getConnection();
 	                       PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -179,27 +193,34 @@ public class AdminSessionsPage {
 	            	 
 	             }
 	        });
-	        btnDlt.setOnAction(e->{
-	        	
-	        	Session sel = table.getSelectionModel().getSelectedItem();
+	        btnDlt.setOnAction(e -> {
+	            Session sel = table.getSelectionModel().getSelectedItem();
 	            if (sel == null) {
-	                  lblMsg.setTextFill(Color.ORANGE);
-	                  lblMsg.setText("Select a session to delete.");
-	                  return;
-	              }
-	              try (Connection conn = DatabaseConnection.getConnection();
-	                   PreparedStatement ps = conn.prepareStatement("DELETE FROM sessions WHERE id = ?")) {
-	                  ps.setInt(1, sel.getId());
-	                  ps.executeUpdate();
-	                  lblMsg.setTextFill(Color.GREEN);
-	                  lblMsg.setText("Session deleted.");
-	                  loadSessions();
-	              } catch (SQLException ex) {
-	                  ex.printStackTrace();
-	                  lblMsg.setTextFill(Color.RED);
-	                  lblMsg.setText("Cannot delete (has bookings)");
-	              }
-	          });
+	                lblMsg.setTextFill(Color.ORANGE);
+	                lblMsg.setText("Select a session to delete.");
+	                return;
+	            }
+	            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+	            alert.setTitle("Delete Session");
+	            alert.setHeaderText("Are you sure?");
+	            alert.setContentText("Delete session: " + sel.getTitle() + "?");
+	            alert.showAndWait().ifPresent(response -> {
+	                if (response == ButtonType.OK) {
+	                    try (Connection conn = DatabaseConnection.getConnection();
+	                         PreparedStatement ps = conn.prepareStatement("DELETE FROM sessions WHERE id = ?")) {
+	                        ps.setInt(1, sel.getId());
+	                        ps.executeUpdate();
+	                        lblMsg.setTextFill(Color.GREEN);
+	                        lblMsg.setText("Session deleted.");
+	                        loadSessions();
+	                    } catch (SQLException ex) {
+	                        ex.printStackTrace();
+	                        lblMsg.setTextFill(Color.RED);
+	                        lblMsg.setText("Cannot delete (session has existing bookings).");
+	                    }
+	                }
+	            });
+	        });
 
 	          btnBack.setOnAction(e -> new AdminDashboard(currentUser).show(stage));
 
@@ -255,6 +276,12 @@ public class AdminSessionsPage {
 		        }
 		        return btn;
 		}
+		private boolean isValidDate(String date) {
+		    return date.matches("\\d{4}-\\d{2}-\\d{2}");
+		}
 
+		private boolean isValidTime(String time) {
+		    return time.matches("\\d{2}:\\d{2}:\\d{2}");
+		}
 		
 }

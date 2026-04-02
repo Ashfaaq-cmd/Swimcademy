@@ -95,6 +95,16 @@ public class RegisterPage {
 				lblMsg.setText("Please fill in all fields.");
 				return;
 			}
+			if (!isValidEmail(email)) {
+			    lblMsg.setTextFill(Color.RED);
+			    lblMsg.setText("Invalid email format. Example: name@example.com");
+			    return;
+			}
+			if (password.length() < 6) {
+			    lblMsg.setTextFill(Color.RED);
+			    lblMsg.setText("Password must be at least 6 characters.");
+			    return;
+			}
 			if(!password.equals(confirm)) {
 				lblMsg.setTextFill(Color.RED);
 				lblMsg.setText("Password do not match!");
@@ -133,6 +143,9 @@ public class RegisterPage {
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/image/logo.png")));
         stage.setScene(scene);
         stage.show();
+	}
+	private boolean isValidEmail(String email) {
+	    return email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$");
 	}
 
 	private boolean registerUser(String name, String email, String password) {

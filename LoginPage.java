@@ -95,6 +95,11 @@ public class LoginPage {
 				lblMsg.setText("Please fill in all fields.");
 				return;
 			}
+			if (!isValidEmail(email)) {
+			    lblMsg.setTextFill(Color.RED);
+			    lblMsg.setText("Invalid email format. Example: name@example.com");
+			    return;
+			}
 			User user = authenticate(email,password);
 			if (user != null) {
 				if(user.getRole().equals("admin")) {
@@ -124,7 +129,9 @@ public class LoginPage {
 	        stage.setScene(scene);
 	        stage.show();
 	}
-
+	private boolean isValidEmail(String email) {
+	    return email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$");
+	}
 	private User authenticate(String email, String password) {
 		// TODO Auto-generated method stub
 		String sql = "SELECT * FROM users WHERE email = ? AND password = ?";
